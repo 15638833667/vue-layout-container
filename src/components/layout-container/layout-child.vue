@@ -3,7 +3,6 @@
     class="ms-layout-container ms-layout-container-child"
     id="child-grid-container"
     v-drop="dragendChild"
-    @dragover="dragoverChild"
   >
     <grid-layout
       :ref="currRef"
@@ -67,7 +66,7 @@ export default {
     },
     currRef: {
       type: [String, Number],
-      default: '',
+      default: "",
     },
   },
   data() {
@@ -99,82 +98,28 @@ export default {
       },
     },
   },
-  mounted() {
-    console.log(this.$refs.gridlayoutChild);
-    setTimeout(() => {
-      this.containerRect =
-        this.$refs[this.currRef].$el?.getBoundingClientRect();
-      console.log("this.containerRect.left", this.containerRect.left);
-      console.log("this.containerRect.right", this.containerRect.right);
-      console.log("this.containerRect.top", this.containerRect.top);
-      console.log("this.containerRect.bottom", this.containerRect.bottom);
-      console.log("---------------------------------------------------");
-    });
-    setTimeout(() => {
-      this.containerRect =
-        this.$refs[this.currRef].$el?.getBoundingClientRect();
-      console.log("this.containerRect.left", this.containerRect.left);
-      console.log("this.containerRect.right", this.containerRect.right);
-      console.log("this.containerRect.top", this.containerRect.top);
-      console.log("this.containerRect.bottom", this.containerRect.bottom);
-      console.log("---------------------------------------------------");
-    }, 1000);
-  },
+  mounted() {},
   methods: {
     layoutUpdatedEvent() {
       // console.log(JSON.stringify(this.layout));
     },
-    dragoverChild(e) {
-      e.stopPropagation();
-      // console.log(e);
-      // 以被拖拽元素左上角定点位置为基准，计算当前组件应该放置的位置
-      this.mouseXY.x = e.clientX;
-      this.mouseXY.y = e.clientY;
-
-      let el = this.$refs[this.currRef]?.$children.at(-1);
-      // console.log(el);
-      el.dragging = {
-        top: this.mouseXY.y - this.containerRect.top,
-        left: this.mouseXY.x - this.containerRect.left,
-      };
-      let new_pos = el.calcXY(
-        this.mouseXY.y - this.containerRect.top,
-        this.mouseXY.x - this.containerRect.left
-      );
-      this.currentNodeInfo = {
-        x: new_pos.x,
-        y: new_pos.y, // puts it at the bottom
-        w: 2,
-        h: 2,
-        i: "drop" + this.time,
-      };
-    },
     dragendChild(e) {
       e.stopPropagation();
-      // 拖拽结束，根据当前位置，防止对应元素
-      let mouseInGrid = false;
+      console.log(e);
       if (
-        this.mouseXY.x > this.containerRect.left &&
-        this.mouseXY.x < this.containerRect.right &&
-        this.mouseXY.y > this.containerRect.top &&
-        this.mouseXY.y < this.containerRect.bottom
-      ) {
-        mouseInGrid = true;
-      }
-      console.log("this.mouseXY.x", this.mouseXY.x);
-      console.log("this.mouseXY.x", this.mouseXY.y);
-      console.log(mouseInGrid);
-      console.log(this.currentNodeInfo);
-      if (
-        mouseInGrid === true &&
         this.childLayout.findIndex((item) => item.i === "drop" + this.time) ===
-          -1 &&
-        Object.keys(this.currentNodeInfo).length
+        -1
       ) {
+        this.currentNodeInfo = {
+          x: 0,
+          y: 0, // puts it at the bottom
+          w: 2,
+          h: 2,
+          i: "drop" + this.time,
+        };
         this.childLayout.push(this.currentNodeInfo);
         this.currentNodeInfo = {};
       }
-      console.log(JSON.stringify(this.childLayout))
     },
   },
 };

@@ -8,7 +8,7 @@
       </ul>
     </el-col>
     <el-col :span="20" class="container-item">
-      <div class="ms-layout-container" @dragover="dragover">
+      <div class="ms-layout-container">
         <grid-layout
           v-drop="dragend"
           id="content"
@@ -127,60 +127,23 @@ export default {
     dragStart(e) {
       console.log(e);
       this.time = new Date().getTime();
-      this.currentNodeInfo = {
-        x: (this.layout.length * 2) % (this.colNum || 24),
-        y: this.layout.length + (this.colNum || 24), // puts it at the bottom
-        w: 2,
-        h: 2,
-        i: "drop" + this.time,
-      };
       this.parentRect = document
         .getElementById("content")
         ?.getBoundingClientRect();
     },
-    dragover(e) {
-      e.stopPropagation();
-      this.hoverParentStatus = true;
-      // console.log(e);
-      // 以被拖拽元素左上角定点位置为基准，计算当前组件应该放置的位置
-      this.mouseXY.x = e.clientX;
-      this.mouseXY.y = e.clientY;
-
-      let el = this.$refs.gridlayout.$children.at(-1);
-      // console.log(this.$refs.gridlayout);
-      el.dragging = {
-        top: this.mouseXY.y - this.parentRect.top,
-        left: this.mouseXY.x - this.parentRect.left,
-      };
-      let new_pos = el.calcXY(
-        this.mouseXY.y - this.parentRect.top,
-        this.mouseXY.x - this.parentRect.left
-      );
-      this.currentNodeInfo = {
-        x: new_pos.x,
-        y: new_pos.y, // puts it at the bottom
-        w: 2,
-        h: 2,
-        i: "drop" + this.time,
-      };
-    },
     dragend(e) {
       console.log(e);
       // 拖拽结束，根据当前位置，防止对应元素
-      let mouseInGrid = false;
       if (
-        this.mouseXY.x > this.parentRect.left &&
-        this.mouseXY.x < this.parentRect.right &&
-        this.mouseXY.y > this.parentRect.top &&
-        this.mouseXY.y < this.parentRect.bottom
+        this.layout.findIndex((item) => item.i === "drop" + this.time) === -1
       ) {
-        mouseInGrid = true;
-      }
-      if (
-        mouseInGrid === true &&
-        this.layout.findIndex((item) => item.i === "drop" + this.time) === -1 &&
-        Object.keys(this.currentNodeInfo).length
-      ) {
+        this.currentNodeInfo = {
+          x: 0,
+          y: 0, // puts it at the bottom
+          w: 2,
+          h: 2,
+          i: "drop" + this.time,
+        };
         this.layout.push(this.currentNodeInfo);
         this.currentNodeInfo = {};
       }
