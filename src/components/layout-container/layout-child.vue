@@ -109,15 +109,6 @@ export default {
       console.log("this.containerRect.top", this.containerRect.top);
       console.log("this.containerRect.bottom", this.containerRect.bottom);
       console.log("---------------------------------------------------");
-    });
-    setTimeout(() => {
-      this.containerRect =
-        this.$refs[this.currRef].$el?.getBoundingClientRect();
-      console.log("this.containerRect.left", this.containerRect.left);
-      console.log("this.containerRect.right", this.containerRect.right);
-      console.log("this.containerRect.top", this.containerRect.top);
-      console.log("this.containerRect.bottom", this.containerRect.bottom);
-      console.log("---------------------------------------------------");
     }, 1000);
   },
   methods: {
